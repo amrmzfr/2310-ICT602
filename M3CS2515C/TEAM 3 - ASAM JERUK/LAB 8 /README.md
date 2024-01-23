@@ -286,6 +286,8 @@ class _CameraWidgetState extends State<CameraWidget> {
 ```
 
 ### Microphone
+![image](https://github.com/addff/2310-ICT602/assets/102727610/7ee98afb-c3b9-4845-a4d8-273d2d2953e6)
+
 ```
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';

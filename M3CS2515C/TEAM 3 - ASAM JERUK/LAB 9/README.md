@@ -12,7 +12,7 @@
 7. Github page README.md should highlight on VSCode final coding pages + Speedcode.
 
 **********************************************
-Link Speed Code: 
+Link Speed Code: https://www.youtube.com/watch?v=JdY6Kasa6mE
 
 Link Soure Code: https://github.com/thisisnotmasyi/ICT602-LAB9.git
 

@@ -67,8 +67,7 @@ Widget build(BuildContext context) {
               },
 ```
 
-
-//display information
+## display information
 
 ```
 final students = snapshot.data!.docs;

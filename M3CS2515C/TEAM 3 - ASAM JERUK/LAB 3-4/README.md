@@ -23,7 +23,17 @@
 6. Create form other information (e.g. Product, Transaction, Course or Department)
 7. Run on AVD
 
-//create form for user information
+--------------------------------------------------------------------------
+
+### LINK FOR LAB 3&4 : 
+
+Link speedcode : https://youtu.be/WHtTb-5GnYY?si=oC32ZM5OlvsVmn7B
+
+Link source code: https://github.com/thisisnotmasyi/ICT602-LAB4.git
+
+***************************************************************************
+
+## create form for user information
 
 ```
 Widget build(BuildContext context) {
@@ -76,14 +86,5 @@ final students = snapshot.data!.docs;
               },
 ```
 
---------------------------------------------------------------------------
-
-### LINK FOR LAB 3&4 : 
-
-Link speedcode : https://youtu.be/WHtTb-5GnYY?si=oC32ZM5OlvsVmn7B
-
-Link source code: https://github.com/thisisnotmasyi/ICT602-LAB4.git
-
-***************************************************************************
 
 

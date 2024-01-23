@@ -20,4 +20,3 @@ Link Source Code:
 
 Laravel : https://github.com/thisisnotmasyi/ICT602-LAB10-laravel-.git 
 
-Flutter : https://github.com/thisisnotmasyi/ICT602-LAB10-flutter-.git

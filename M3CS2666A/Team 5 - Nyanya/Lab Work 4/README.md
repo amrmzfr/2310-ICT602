@@ -2,7 +2,7 @@ https://youtu.be/sIjBqusnfT4
 
 ## reusable_widget.dart
 
-''' dart
+```dart
 import 'package:flutter/material.dart';
 
 Image logoWidget(String imageName) {
@@ -108,10 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
+```
 
 ## reset_password.dart
 
+```dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lab4/reusable_widgets/reusable_widget.dart';
 
@@ -172,10 +173,11 @@ class _ResetPasswordState extends State<ResetPassword> {
     );
   }
 }
-
+```
 
 ## signin_screen.dart
 
+```dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lab4/reusable_widgets/reusable_widget.dart';
 import 'package:lab4/screens/home_screen.dart';
@@ -285,10 +287,11 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 }
-
+```
 
 ## signup_screen.dart
 
+```dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lab4/reusable_widgets/reusable_widget.dart';
 import 'package:lab4/screens/home_screen.dart';
@@ -381,10 +384,11 @@ hexStringToColor(String hexColor) {
   }
   return Color(int.parse(hexColor, radix: 16));
 }
-
+```
 
 ## main.dart
 
+```dart
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lab4/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
@@ -426,10 +430,12 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+```
 
 
 ## android/app/build.gradle
 
+```dart
 plugins {
     id "com.android.application"
     id "kotlin-android"
@@ -501,10 +507,10 @@ flutter {
 dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 }
-
+```
 
 ## android/build.gradle
-
+```dart
 buildscript {
     ext.kotlin_version = '1.8.22'
     repositories {
@@ -534,6 +540,8 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+```

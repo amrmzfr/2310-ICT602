@@ -2,6 +2,7 @@ https://youtu.be/sIjBqusnfT4
 
 ## reusable_widget.dart
 
+''' dart
 import 'package:flutter/material.dart';
 
 Image logoWidget(String imageName) {

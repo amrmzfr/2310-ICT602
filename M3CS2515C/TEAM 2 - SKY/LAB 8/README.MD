@@ -21,3 +21,190 @@ NURFADLIYANA 'AQILAH BINTI SULAIMAN (2022824754)
 
 
 Youtube:
+
+```
+### Accelerometer Code
+@override
+  void initState() {
+    super.initState();
+
+    // Start listening to the accelerometer
+    accelerometerEvents.listen((AccelerometerEvent event) {
+      setState(() {
+        accelerometerValues =
+            'X: ${event.x.toStringAsFixed(2)}, Y: ${event.y.toStringAsFixed(2)}, Z: ${event.z.toStringAsFixed(2)}';
+      });
+    });
+
+```
+```
+### Gyrometer Code
+// Start listening to the gyroscope
+    gyroscopeEvents.listen((GyroscopeEvent event) {
+      setState(() {
+        gyroscopeValues =
+            'X: ${event.x.toStringAsFixed(2)}, Y: ${event.y.toStringAsFixed(2)}, Z: ${event.z.toStringAsFixed(2)}';
+      });
+    });
+  }
+
+```
+
+```
+### Main.dart Code
+import 'package:flutter/material.dart';
+import 'screens/splash_screen.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SplashScreen(),
+    );
+  }
+}
+
+
+```
+```
+### splash_screen.dart Code
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'menu_screen.dart';
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(
+      Duration(seconds: 3),
+      () => Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MenuScreen()),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: FlutterLogo(size: 200),
+      ),
+    );
+  }
+}
+
+```
+
+```
+### second_screen.dart Code
+import 'package:flutter/material.dart';
+import 'package:sensors/sensors.dart';
+
+class SecondScreen extends StatefulWidget {
+  @override
+  _SecondScreenState createState() => _SecondScreenState();
+}
+
+class _SecondScreenState extends State<SecondScreen> {
+  String accelerometerValues = 'Unknown';
+  String gyroscopeValues = 'Unknown';
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Start listening to the accelerometer
+    accelerometerEvents.listen((AccelerometerEvent event) {
+      setState(() {
+        accelerometerValues =
+            'X: ${event.x.toStringAsFixed(2)}, Y: ${event.y.toStringAsFixed(2)}, Z: ${event.z.toStringAsFixed(2)}';
+      });
+    });
+
+    // Start listening to the gyroscope
+    gyroscopeEvents.listen((GyroscopeEvent event) {
+      setState(() {
+        gyroscopeValues =
+            'X: ${event.x.toStringAsFixed(2)}, Y: ${event.y.toStringAsFixed(2)}, Z: ${event.z.toStringAsFixed(2)}';
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Second Screen'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('This is the second screen!'),
+            SizedBox(height: 20),
+            Text('Accelerometer Data: $accelerometerValues'),
+            SizedBox(height: 20),
+            Text('Gyroscope Data: $gyroscopeValues'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+```
+```
+### menu_screen.dart Code
+import 'package:flutter/material.dart';
+import 'second_screen.dart';
+
+class MenuScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Menu Screen'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SecondScreen()),
+                );
+              },
+              child: Text('Go to Second Screen'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+```
+
+
+
+

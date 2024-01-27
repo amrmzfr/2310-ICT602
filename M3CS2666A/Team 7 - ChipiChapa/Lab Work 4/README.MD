@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+```
 
 ## signupscreen.dart
 
@@ -146,6 +147,7 @@ class _SignUpScrenState extends State<SignUpScreen> {
     );
   }
 }
+```
 
 ## loginscreen.dart
 
@@ -267,7 +269,7 @@ class _LoginScrenState extends State<LoginScreen> {
     );
   }
 }
-
+```
 
 ## welcome.dart
 
@@ -321,7 +323,7 @@ class _WelcomeState extends State<Welcome> {
     );
   }
 }
-
+```
 
 ## firebase_option.dart
 
@@ -407,7 +409,7 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.lab3.RunnerTests',
   );
 }
-
+```
 
 ## pubspec.dart
 

@@ -1,7 +1,8 @@
 [<img src="https://github.com/addff/2310-ICT602/blob/main/M3CS2666A/Team%201%20-%20Solidariti/Lab%20Work%204/image.png?raw=true" width="600" height="300"
 />](https://youtu.be/tCH7mtQrmZQ)
 
-MAIN.DART
+MAIN.DART 
+
 import 'package:create/realtime_db/insert.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -110,5 +111,95 @@ class _MyHomePageState extends State<MyHomePage> {
         style: const TextStyle(color: Colors.white),
       ),
     );
+  }
+}
+
+INSIDE.DART
+
+// ignore_for_file: unnecessary_new
+
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+
+class RealtimeDatabaseInsert extends StatefulWidget {
+  const RealtimeDatabaseInsert({super.key});
+
+  @override
+  RealtimeDatabaseInsertState createState() => RealtimeDatabaseInsertState();
+}
+
+class RealtimeDatabaseInsertState extends State<RealtimeDatabaseInsert> {
+  var nameController = new TextEditingController();
+  var ageController = new TextEditingController();
+  var stateController = new TextEditingController();
+
+  final databaseRef = FirebaseDatabase.instance.ref();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+          child: Column(
+        children: [
+          const Text(
+            "Insert Data",
+            style: TextStyle(fontSize: 28),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          TextFormField(
+            controller: nameController,
+            decoration: const InputDecoration(
+                labelText: 'Name', border: OutlineInputBorder()),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          TextFormField(
+            controller: ageController,
+            decoration: const InputDecoration(
+                labelText: 'Age', border: OutlineInputBorder()),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          TextFormField(
+            controller: stateController,
+            decoration: const InputDecoration(
+                labelText: 'State', border: OutlineInputBorder()),
+          ),
+          const SizedBox(
+            height: 50,
+          ),
+          OutlinedButton(
+              onPressed: () {
+                if (nameController.text.isNotEmpty &&
+                    ageController.text.isNotEmpty &&
+                    stateController.text.isNotEmpty) {
+                  insertData(nameController.text, ageController.text,
+                      stateController.text);
+                }
+              },
+              child: const Text(
+                "Add",
+                style: TextStyle(fontSize: 18),
+              ))
+        ],
+      )),
+    );
+  }
+
+  void insertData(String name, String age, String state) {
+    String? key = databaseRef.child("Users").child("ListRegister").push().key;
+    databaseRef.child("Users").child("ListRegister").child(key!).set({
+      'id': key,
+      'name': name,
+      'age': age,
+      'state': state,
+    });
+    nameController.clear();
+    ageController.clear();
+    stateController.clear();
   }
 }

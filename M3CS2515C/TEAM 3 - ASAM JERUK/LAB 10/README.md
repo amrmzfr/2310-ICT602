@@ -16,6 +16,14 @@
 ********************************************
 Link Speed Code: https://youtu.be/IdXYigpQqT0
 
+Video on YouTube: 
+
+Part 1: https://youtu.be/uH4xXVqZNz4
+
+Part 2: https://youtu.be/nzV1nfK9Wu0
+
+Part 3: https://youtu.be/DDs6yxjLieM
+
 Link Source Code: 
 
 Laravel : https://github.com/thisisnotmasyi/ICT602-LAB10-laravel-.git 

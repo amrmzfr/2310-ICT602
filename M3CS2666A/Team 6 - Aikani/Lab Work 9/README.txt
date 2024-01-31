@@ -1,31 +1,3 @@
 1. Source Code:
 
-```dart
- _signInWithGoogle()async{
-
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-    try {
-
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
-
-      if(googleSignInAccount != null ){
-        final GoogleSignInAuthentication googleSignInAuthentication = await
-        googleSignInAccount.authentication;
-
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken,
-        );
-
-        await _firebaseAuth.signInWithCredential(credential);
-        Navigator.pushNamed(context, "/home");
-      }
-
-    }catch(e) {
-showToast(message: "some error occured $e");
-    }
-  }
-```
-
-
+<img src="https://github.com/addff/2310-ICT602/blob/main/M3CS2666A/Team%206%20-%20Aikani/Lab%20Work%201/Pictures/login1.jpg" alt="image" width="auto" height="auto">

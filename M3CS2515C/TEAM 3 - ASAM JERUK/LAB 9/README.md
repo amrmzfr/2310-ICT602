@@ -14,7 +14,15 @@
 **********************************************
 Link Speed Code: https://www.youtube.com/watch?v=JdY6Kasa6mE
 
-https://www.youtube.com/watch?v=iMc_2lQtxYQ
+Video on YouTube:
+
+Part 1: https://www.youtube.com/watch?v=cNieS5W6AQk
+
+Part 2: https://www.youtube.com/watch?v=3wuLu-nL1Dk
+
+Part 3: https://youtu.be/vNM3MtW0xI8
+
+Part 4: https://www.youtube.com/watch?v=19OFGpRo-c8
 
 Link Soure Code: https://github.com/thisisnotmasyi/ICT602-LAB9.git
 

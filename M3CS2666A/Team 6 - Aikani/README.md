@@ -1,7 +1,22 @@
-TEAM MEMBERS:
+<body>
 
-1. SITI ZULAIKHA BINTI MOHD RIZAL (2022981519)
+<h2>Aikani Team Members</h2>
 
-2. SITI NUR AINI BINTI AHMAD FAUZI (2022782581)
+<table>
+  <tr>
+    <th>NAME</th>
+    <th>STUDENT ID</th>
+  </tr>
+  <tr>
+    <td>SITI ZULAIKHA BINTI MOHD RIZAL</td>
+    <td>2022981519</td>
+  </tr>
+  <tr>
+    <td>SITI NUR AINI BINTI AHMAD FAUZI</td>
+    <td>2022782581</td>
+  </tr>
+  <tr>
+    <td>AIDA MAISARAH BINTI NOR AZLI</td>
+    <td>2022758757</td>
+  </tr>
 
-3. AIDA MAISARAH BINTI NOR AZLI (2022758757)

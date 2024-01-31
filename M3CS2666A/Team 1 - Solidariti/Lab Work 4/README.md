@@ -1,8 +1,9 @@
 [<img src="https://github.com/addff/2310-ICT602/blob/main/M3CS2666A/Team%201%20-%20Solidariti/Lab%20Work%204/image.png?raw=true" width="600" height="300"
 />](https://youtu.be/tCH7mtQrmZQ)
 
-MAIN.DART 
 
+MAIN.DART 
+```
 import 'package:create/realtime_db/insert.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -203,3 +204,4 @@ class RealtimeDatabaseInsertState extends State<RealtimeDatabaseInsert> {
     stateController.clear();
   }
 }
+```

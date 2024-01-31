@@ -1,6 +1,6 @@
 <body>
 
-<h2>Aikani Team Members</h2>
+<h2>Team Members:</h2>
 
 <table>
   <tr>

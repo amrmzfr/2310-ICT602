@@ -15,6 +15,10 @@
 
 https://youtu.be/9QHRx5gbtB8
 
+## GITHUB SOURCE CODE
+
+https://github.com/ismahhaziq/Lab8-talktohardware
+
 ## CODE SNIPPET
 
 #### In pubspec.yaml, add this under 'dependencies'

@@ -1,5 +1,3 @@
-
-```dart
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace, avoid_print, prefer_final_fields, use_build_context_synchronously
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
@@ -221,5 +219,3 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 }
 
-
-```

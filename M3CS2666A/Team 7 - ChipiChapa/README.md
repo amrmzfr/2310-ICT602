@@ -30,4 +30,4 @@
 
 ## GROUP PROJECT ICT 602
 
-##Student Task Planner App
+#Student Task Planner App

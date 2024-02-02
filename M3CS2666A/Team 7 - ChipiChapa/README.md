@@ -25,6 +25,8 @@
     <td>2022844538</td>
     <td>CS2666A</td>
   </tr>
+</table>
+</body>
 
 ## GROUP PROJECT ICT 602
 

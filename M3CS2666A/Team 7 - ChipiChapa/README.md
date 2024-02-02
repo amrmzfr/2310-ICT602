@@ -25,3 +25,7 @@
     <td>2022844538</td>
     <td>CS2666A</td>
   </tr>
+
+## GROUP PROJECT ICT 602
+
+##Student Task Planner App

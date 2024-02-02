@@ -212,3 +212,1466 @@ class DefaultFirebaseOptions {
 }
 
 ```
+## PAGE FILE
+
+## HomePage.dart
+
+```dart
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last, prefer_if_null_operators, curly_braces_in_flow_control_structures
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:todoapp/Custom/TaskCard.dart';
+import 'package:todoapp/Service/Auth_Service.dart';
+import 'package:todoapp/pages/AddDoPage.dart';
+import 'package:todoapp/pages/SignInPage.dart';
+import 'package:todoapp/pages/view_data.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  AuthClass authClass = AuthClass();
+  final Stream<QuerySnapshot> _stream =
+      FirebaseFirestore.instance.collection("Task").snapshots();
+  List<Select> selected = [];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color.fromARGB(221, 8, 26, 45),
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(221, 8, 26, 45),
+        title: Text(
+          "Today's Schedule",
+          style: TextStyle(
+            fontSize: 34,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        actions: [
+          CircleAvatar(
+            backgroundImage: AssetImage("assets/profile.png"),
+          ),
+          SizedBox(
+            width: 25,
+          ),
+        ],
+        bottom: PreferredSize(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 22),
+                child: Row(
+                  children: [
+                    Text(
+                      "Plan Better, Live Better",
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            preferredSize: Size.fromHeight(35)),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color.fromARGB(221, 47, 177, 206),
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              size: 32,
+              color: Colors.white,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (builder) => AddDoPage()));
+              },
+              child: Icon(
+                Icons.add,
+                size: 32,
+                color: Colors.white,
+              ),
+            ),
+            label: 'Add',
+          ),
+          BottomNavigationBarItem(
+            icon: InkWell(
+              onTap: () async {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (builder) => SignInPage()),
+                    (route) => false);
+              },
+              child: Icon(
+                Icons.logout,
+                size: 32,
+                color: Colors.white,
+              ),
+            ),
+            label: 'LogOut',
+          )
+        ],
+      ),
+      body: StreamBuilder(
+          stream: _stream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return ListView.builder(
+                itemCount: snapshot.data?.docs.length,
+                itemBuilder: (context, index) {
+                  IconData iconData;
+                  Color iconColor;
+                  Map<String, dynamic> document =
+                      snapshot.data?.docs[index].data() as Map<String, dynamic>;
+                  switch (document["category"]) {
+                    case "Study":
+                      iconData = Icons.book;
+                      iconColor = Colors.red;
+                      break;
+                    case "Food":
+                      iconData = Icons.food_bank;
+                      iconColor = Colors.cyan.shade600;
+                      break;
+                    case "Assignment":
+                      iconData = Icons.assignment;
+                      iconColor = Colors.purple.shade300;
+                      break;
+                    case "Cocuriculum":
+                      iconData = Icons.meeting_room;
+                      iconColor = Colors.green.shade400;
+                      break;
+                    case "Sport":
+                      iconData = Icons.sports_handball;
+                      iconColor = Colors.orange.shade600;
+                      break;
+                    default:
+                      iconData = Icons.dangerous_outlined;
+                      iconColor = Colors.red.shade400;
+                  }
+                  selected.add(Select(
+                      id: snapshot.data!.docs[index].id, checkValue: false));
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (builder) => ViewData(
+                            document: document,
+                            id: snapshot.data!.docs[index].id,
+                          ),
+                        ),
+                      );
+                    },
+                    child: TaskCard(
+                      title: document["title"] == null
+                          ? "Hello There"
+                          : document["title"],
+                      check: selected[index].checkValue,
+                      iconBgColor: Colors.white,
+                      iconColor: iconColor,
+                      iconData: iconData,
+                      time: "11 AM",
+                      onChange: onChange,
+                      index: index,
+                    ),
+                  );
+                });
+          }),
+    );
+  }
+
+  void onChange(int index) {
+    setState(() {
+      selected[index].checkValue = !selected[index].checkValue;
+    });
+  }
+}
+
+class Select {
+  String id;
+  bool checkValue = false;
+  Select({required this.id, required this.checkValue});
+}
+
+```
+
+## SignInPage.dart
+
+```dart
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace, use_build_context_synchronously, avoid_print
+
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:flutter/material.dart';
+import 'package:todoapp/Service/Auth_Service.dart';
+import 'package:todoapp/pages/HomePage.dart';
+import 'package:todoapp/pages/SignUpPage.dart';
+
+class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  bool circular = false;
+  AuthClass authClass = AuthClass();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: Color.fromARGB(255, 35, 58, 80),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Sign In",
+                style: TextStyle(
+                  fontSize: 35,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              buttonItem(() {
+                authClass.googleSignIn(context);
+              }),
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                "Or",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              textItem("Email", _emailController, false),
+              SizedBox(
+                height: 15,
+              ),
+              textItem("Password", _passwordController, true),
+              SizedBox(
+                height: 30,
+              ),
+              colorButton(),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "If you don't have an Account? ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (builder) => SignUpPage()),
+                          (route) => false);
+                    },
+                    child: Text(
+                      "SignUp",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Forget Password?",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget colorButton() {
+    return InkWell(
+      onTap: () async {
+        try {
+          firebase_auth.UserCredential userCredential =
+              await firebaseAuth.signInWithEmailAndPassword(
+                  email: _emailController.text,
+                  password: _passwordController.text);
+          print(userCredential.user?.email);
+          setState(() {
+            circular = false;
+          });
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (builder) => HomePage()),
+              (route) => false);
+        } catch (e) {
+          final snackbar = SnackBar(content: Text(e.toString()));
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+          setState(() {
+            circular = false;
+          });
+        }
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width - 90,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(colors: [
+            Color(0xfffd746c),
+            Color(0xffff9068),
+            Color(0xfffd746c)
+          ]),
+        ),
+        child: Center(
+          child: circular
+              ? CircularProgressIndicator()
+              : Text(
+                  "Sign In",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget buttonItem(Function() onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: MediaQuery.of(context).size.width - 60,
+        height: 60,
+        child: Card(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/google.png"),
+              SizedBox(
+                width: 15,
+              ),
+              Text("Continue With Google"),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget textItem(
+      String labeltext, TextEditingController controller, bool obscureText) {
+    return Container(
+      width: MediaQuery.of(context).size.width - 70,
+      height: 55,
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        style: TextStyle(
+          fontSize: 17,
+          color: Colors.white,
+        ),
+        decoration: InputDecoration(
+          labelText: labeltext,
+          labelStyle: TextStyle(
+            fontSize: 17,
+            color: Colors.white,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(
+              width: 1.5,
+              color: Colors.amber,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(
+              width: 1,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+```
+
+## SignUpPage.dart
+
+```dart
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace, avoid_print, prefer_final_fields, use_build_context_synchronously
+
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:flutter/material.dart';
+import 'package:todoapp/Service/Auth_Service.dart';
+import 'package:todoapp/pages/SignInPage.dart';
+
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  bool circular = false;
+  AuthClass authClass = AuthClass();
+
+  get onTap => null;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: Color.fromARGB(255, 35, 58, 80),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Sign Up",
+                style: TextStyle(
+                  fontSize: 35,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              buttonItem(() async {
+                await authClass.googleSignIn(context);
+              }),
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                "Or",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              textItem("Email", _emailController, false),
+              SizedBox(
+                height: 15,
+              ),
+              textItem("Password", _passwordController, true),
+              SizedBox(
+                height: 30,
+              ),
+              colorButton(),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "If you already have an Account? ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (builder) => SignInPage()),
+                          (route) => false);
+                    },
+                    child: Text(
+                      "Login",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget colorButton() {
+    return InkWell(
+      onTap: () async {
+        setState(() {
+          circular = true;
+        });
+        try {
+          firebase_auth.UserCredential userCredential =
+              await firebaseAuth.createUserWithEmailAndPassword(
+                  email: _emailController.text,
+                  password: _passwordController.text);
+          print(userCredential.user?.email);
+          setState(() {
+            circular = false;
+          });
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (builder) => SignInPage()),
+              (route) => false);
+        } catch (e) {
+          final snackbar = SnackBar(content: Text(e.toString()));
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+          setState(() {
+            circular = false;
+          });
+        }
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width - 90,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(colors: [
+            Color(0xfffd746c),
+            Color(0xffff9068),
+            Color(0xfffd746c)
+          ]),
+        ),
+        child: Center(
+          child: circular
+              ? CircularProgressIndicator()
+              : Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget buttonItem(Function() onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: MediaQuery.of(context).size.width - 60,
+        height: 60,
+        child: Card(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("assets/google.png"),
+              SizedBox(
+                width: 15,
+              ),
+              Text("Continue With Google"),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget textItem(
+      String labeltext, TextEditingController controller, bool obscureText) {
+    return Container(
+      width: MediaQuery.of(context).size.width - 70,
+      height: 55,
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        style: TextStyle(
+          fontSize: 17,
+          color: Colors.white,
+        ),
+        decoration: InputDecoration(
+          labelText: labeltext,
+          labelStyle: TextStyle(
+            fontSize: 17,
+            color: Colors.white,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(
+              width: 1.5,
+              color: Colors.amber,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide(
+              width: 1,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+```
+
+## AddDoPage.dart
+
+```dart
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class AddDoPage extends StatefulWidget {
+  const AddDoPage({super.key});
+
+  @override
+  State<AddDoPage> createState() => _AddDoPageState();
+}
+
+class _AddDoPageState extends State<AddDoPage> {
+  get fontSize => null;
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  String type = "";
+  String category = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // ignore: duplicate_ignore
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Color.fromARGB(255, 68, 59, 136),
+            Color.fromARGB(255, 34, 28, 73),
+          ]),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 30,
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(CupertinoIcons.arrow_left),
+                color: Colors.white,
+                iconSize: 28,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Create",
+                      style: TextStyle(
+                        fontSize: 33,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 4,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      "New Task",
+                      style: TextStyle(
+                        fontSize: 33,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    label("Task Title"),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    title(),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    label("Task Type"),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      children: [
+                        taskSelect("Important", 0xff2664fa),
+                        SizedBox(width: 20),
+                        taskSelect("Planned", 0xff2bc8d9),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    label("Description"),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    description(),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    label("Category"),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Wrap(
+                      runSpacing: 10,
+                      children: [
+                        categorySelect("Food", 0xffff6d6e),
+                        SizedBox(width: 20),
+                        categorySelect("Assignment", 0xfff29732),
+                        SizedBox(width: 20),
+                        categorySelect("Cocuriculum", 0xff6557ff),
+                        SizedBox(width: 20),
+                        categorySelect("Study", 0xff234ebd),
+                        SizedBox(width: 20),
+                        categorySelect("Sport", 0xff2bc8d9),
+                      ],
+                    ),
+                    SizedBox(height: 50),
+                    button(),
+                    SizedBox(height: 30),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget button() {
+    return InkWell(
+      onTap: () {
+        FirebaseFirestore.instance.collection("Task").add({
+          "title": _titleController.text,
+          "task": type,
+          "category": category,
+          "description": _descriptionController.text,
+        });
+        Navigator.pop(context);
+      },
+      child: Container(
+        height: 56,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: [
+              Color(0xff8a32f1),
+              Color(0xffad32f9),
+            ],
+          ),
+        ),
+        child: Center(
+          child: Text(
+            "Add Task",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget description() {
+    return Container(
+      height: 150,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: Color(0xff2a2e3d),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: TextFormField(
+        controller: _descriptionController,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: 17,
+        ),
+        maxLines: null,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "Task Title",
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 17,
+          ),
+          contentPadding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget taskSelect(String label, int color) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          type = label;
+        });
+      },
+      child: Chip(
+        backgroundColor: type == label ? Colors.white : Color(color),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            10,
+          ),
+        ),
+        label: Text(
+          label,
+          style: TextStyle(
+            color: type == label ? Colors.black : Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        labelPadding: EdgeInsets.symmetric(
+          horizontal: 17,
+          vertical: 3.8,
+        ),
+      ),
+    );
+  }
+
+  Widget categorySelect(String label, int color) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          category = label;
+        });
+      },
+      child: Chip(
+        backgroundColor: category == label ? Colors.white : Color(color),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            10,
+          ),
+        ),
+        label: Text(
+          label,
+          style: TextStyle(
+            color: category == label ? Colors.black : Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        labelPadding: EdgeInsets.symmetric(
+          horizontal: 17,
+          vertical: 3.8,
+        ),
+      ),
+    );
+  }
+
+  Widget title() {
+    return Container(
+      height: 55,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: Color(0xff2a2e3d),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: TextFormField(
+        controller: _titleController,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: 17,
+        ),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "Task Title",
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 17,
+          ),
+          contentPadding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget label(String label) {
+    return Text(
+      label,
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+        fontSize: 17,
+        letterSpacing: 0.2,
+      ),
+    );
+  }
+}
+
+```
+
+## view_data.dart
+
+```dart
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, must_be_immutable, prefer_if_null_operators
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class ViewData extends StatefulWidget {
+  const ViewData({
+    Key? key,
+    required this.document,
+    required this.id,
+  }) : super(key: key);
+
+  final Map<String, dynamic> document;
+  final String id;
+
+  @override
+  State<ViewData> createState() => _ViewDataState();
+}
+
+class _ViewDataState extends State<ViewData> {
+  get fontSize => null;
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late String type;
+  late String category;
+  bool edit = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    String title = widget.document["title"] == null
+        ? "Hello There"
+        : widget.document["title"];
+    _titleController = TextEditingController(text: title);
+    _descriptionController =
+        TextEditingController(text: widget.document["description"]);
+    type = widget.document["task"];
+    category = widget.document["category"];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // ignore: duplicate_ignore
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Color.fromARGB(255, 68, 59, 136),
+            Color.fromARGB(255, 34, 28, 73),
+          ]),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 30,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(CupertinoIcons.arrow_left),
+                    color: Colors.white,
+                    iconSize: 28,
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          FirebaseFirestore.instance
+                              .collection("Task")
+                              .doc(widget.id)
+                              .delete()
+                              .then((value) {
+                            Navigator.pop(context);
+                          });
+                        },
+                        icon: Icon(Icons.delete),
+                        color: Colors.red.shade400,
+                        iconSize: 28,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          setState(() {
+                            edit = !edit;
+                          });
+                        },
+                        icon: Icon(Icons.edit),
+                        color: edit ? Colors.yellow : Colors.white,
+                        iconSize: 28,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      edit ? "Custom " : "View",
+                      style: TextStyle(
+                        fontSize: 33,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 4,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      "Your Task",
+                      style: TextStyle(
+                        fontSize: 33,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    label("Task Title"),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    title(),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    label("Task Type"),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      children: [
+                        taskSelect("Important", 0xff2664fa),
+                        SizedBox(width: 20),
+                        taskSelect("Planned", 0xff2bc8d9),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    label("Description"),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    description(),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    label("Category"),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Wrap(
+                      runSpacing: 10,
+                      children: [
+                        categorySelect("Food", 0xffff6d6e),
+                        SizedBox(width: 20),
+                        categorySelect("Assignment", 0xfff29732),
+                        SizedBox(width: 20),
+                        categorySelect("Cocuriculum", 0xff6557ff),
+                        SizedBox(width: 20),
+                        categorySelect("Study", 0xff234ebd),
+                        SizedBox(width: 20),
+                        categorySelect("Sport", 0xff2bc8d9),
+                      ],
+                    ),
+                    SizedBox(height: 50),
+                    edit ? button() : Container(),
+                    SizedBox(height: 30),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget button() {
+    return InkWell(
+      onTap: () {
+        FirebaseFirestore.instance.collection("Task").doc(widget.id).update({
+          "title": _titleController.text,
+          "task": type,
+          "category": category,
+          "description": _descriptionController.text,
+        });
+        Navigator.pop(context);
+      },
+      child: Container(
+        height: 56,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: [
+              Color(0xff8a32f1),
+              Color(0xffad32f9),
+            ],
+          ),
+        ),
+        child: Center(
+          child: Text(
+            "Update Task",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget description() {
+    return Container(
+      height: 150,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: Color(0xff2a2e3d),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: TextFormField(
+        controller: _descriptionController,
+        enabled: edit,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: 17,
+        ),
+        maxLines: null,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "Task Title",
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 17,
+          ),
+          contentPadding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget taskSelect(String label, int color) {
+    return InkWell(
+      onTap: edit
+          ? () {
+              setState(() {
+                type = label;
+              });
+            }
+          : null,
+      child: Chip(
+        backgroundColor: type == label ? Colors.white : Color(color),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            10,
+          ),
+        ),
+        label: Text(
+          label,
+          style: TextStyle(
+            color: type == label ? Colors.black : Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        labelPadding: EdgeInsets.symmetric(
+          horizontal: 17,
+          vertical: 3.8,
+        ),
+      ),
+    );
+  }
+
+  Widget categorySelect(String label, int color) {
+    return InkWell(
+      onTap: edit
+          ? () {
+              setState(() {
+                category = label;
+              });
+            }
+          : null,
+      child: Chip(
+        backgroundColor: category == label ? Colors.white : Color(color),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(
+            10,
+          ),
+        ),
+        label: Text(
+          label,
+          style: TextStyle(
+            color: category == label ? Colors.black : Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        labelPadding: EdgeInsets.symmetric(
+          horizontal: 17,
+          vertical: 3.8,
+        ),
+      ),
+    );
+  }
+
+  Widget title() {
+    return Container(
+      height: 55,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: Color(0xff2a2e3d),
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: TextFormField(
+        controller: _titleController,
+        enabled: edit,
+        style: TextStyle(
+          color: Colors.grey,
+          fontSize: 17,
+        ),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "Task Title",
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 17,
+          ),
+          contentPadding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget label(String label) {
+    return Text(
+      label,
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+        fontSize: 17,
+        letterSpacing: 0.2,
+      ),
+    );
+  }
+}
+
+```
+
+## TaskCard.dart
+
+```dart
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last, sized_box_for_whitespace
+
+import 'package:flutter/material.dart';
+
+class TaskCard extends StatelessWidget {
+  const TaskCard({
+    Key? key,
+    required this.title,
+    required this.iconData,
+    required this.iconColor,
+    required this.time,
+    required this.check,
+    this.iconBgColor,
+    required this.onChange,
+    required this.index,
+  }) : super(key: key);
+
+  final String title;
+  final IconData iconData;
+  final Color iconColor;
+  final String time;
+  final bool check;
+  final iconBgColor;
+  final Function onChange;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        children: [
+          Theme(
+            child: Transform.scale(
+              scale: 1.5,
+              child: Checkbox(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                activeColor: Color(0xff6cf8a9),
+                checkColor: Color(0xff0e3e26),
+                value: check,
+                onChanged: (bool? change) {
+                  onChange(index);
+                },
+              ),
+            ),
+            data: ThemeData(
+              primarySwatch: Colors.blue,
+              unselectedWidgetColor: Color(0xff5e616a),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              height: 75,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                color: Color(0xff2a2e3d),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Container(
+                      height: 33,
+                      width: 36,
+                      decoration: BoxDecoration(
+                        color: iconBgColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        iconData,
+                        color: iconColor,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 18,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      time,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+```

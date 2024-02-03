@@ -10,3 +10,34 @@
 8. Github page README.md should highlight on VSCode final coding pages + Speedcode.
 ### Link for Youtube :
 https://youtu.be/clD3Fl42ftI
+## CODE SNIPPET
+```dart
+return ListView.builder(
+          itemCount: books.length,
+          itemBuilder: (context, index) {
+            var book = books[index].data() as Map<String, dynamic>;
+
+            return ListTile(
+              title: Text(book['title'] ?? 'No Title'),
+              subtitle: Text(book['author'] ?? 'No Author'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.remove_red_eye),
+                    onPressed: () {
+                      // Navigate to the ViewBookScreen with the current book details
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ViewBookScreen(
+                            title: book['title'] ?? '',
+                            author: book['author'] ?? '',
+                            userEmail: userEmail ?? '',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+```
+

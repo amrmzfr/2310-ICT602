@@ -14,7 +14,9 @@ SpeedCode: https://www.youtube.com/watch?v=_7lhMO_gP9Y
 
 Login page
 
-_import 'package:firebase_auth/firebase_auth.dart';
+**login_page.dart**
+```
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_602/firebase_auth_service.dart';
 import 'package:flutter_602/home_page.dart';
@@ -170,13 +172,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-_
-
+```
 
 Sign-In / Login With Google fucntion
 
 **firebase_auth_service.dart**
-_Google Sign in Function
+```
+Google Sign in Function
 
   Future<User?> signInWithGoogle() async {
     try {
@@ -217,7 +219,7 @@ _Google Sign in Function
       });
     }
   }
-_
+```
 
 
 

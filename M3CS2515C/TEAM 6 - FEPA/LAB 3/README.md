@@ -9,4 +9,4 @@ Database
 6. Run on AVD.
 
 
-Lab 3: https://youtu.be/5qve3Yp1jrk
+Lab 3: [https://youtu.be/5qve3Yp1jrk](https://www.youtube.com/watch?v=vNNIwgVR6rM)https://www.youtube.com/watch?v=vNNIwgVR6rM
